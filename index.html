@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>振軒車業 / JS-AUTO - 嚴選二手車 · 專業認證</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amber: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        },
+                        dark: {
+                            950: '#07080c',
+                            900: '#0d0e15',
+                            800: '#141622',
+                            700: '#1e2133',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #07080c;
+            color: #e2e8f0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .gold-text-gradient {
+            background: linear-gradient(135deg, #fff 0%, #fef08a 30%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-border-gradient {
+            border-image: linear-gradient(135deg, rgba(212, 175, 55, 0.5), rgba(255, 255, 255, 0.1)) 1;
+        }
+        .gold-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+            color: #000;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .gold-btn:hover {
+            background: linear-gradient(135deg, #f3c669 0%, #d4af37 100%);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.15);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07080c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e2133;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+
+    <!-- 頂部跑馬燈 / 廣播公告 -->
+    <div class="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-black py-2 px-4 text-xs font-bold shadow-lg">
+        <div class="max-w-7xl mx-mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-4 overflow-hidden whitespace-nowrap">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> 三大嚴選保證：保證不賣事故車 · 不賣泡水車 · 不賣調表車</span>
+                <span class="hidden md:inline">|</span>
+                <span class="hidden md:flex items-center gap-1.5"><i class="fa-solid fa-award text-black"></i> 授權認證：台灣超級鑑定 TAIWAN SUPER INSPECTION</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="https://www.facebook.com/profile.php?id=61590226944711" target="_blank" class="hover:underline flex items-center gap-1">
+                    <i class="fa-brands fa-facebook"></i> Facebook 粉絲專頁
+                </a>
+                <span>|</span>
+                <a href="https://www.instagram.com/js_auto_" target="_blank" class="hover:underline flex items-center gap-1">
+                    <i class="fa-brands fa-instagram"></i> Instagram (@js_auto_)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主選單 Navbar -->
+    <nav class="sticky top-0 z-40 bg-dark-950/90 backdrop-blur-md border-b border-amber-500/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- 品牌標誌 Logo & Name -->
+                <div class="flex items-center gap-3">
+                    <div id="navLogoContainer" class="w-12 h-12 rounded-full border border-amber-500/30 flex items-center justify-center bg-dark-900 overflow-hidden shadow-md">
+                        <!-- JS Dynamic Image or Placeholder -->
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-black tracking-wider text-white flex items-center gap-2">
+                            振軒車業
+                            <span class="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">JS-AUTO</span>
+                        </h1>
+                        <p class="text-[10px] text-slate-400 tracking-widest">專業 · 誠信 · 品質 · 服務</p>
+                    </div>
+                </div>
+
+                <!-- 導覽連結 & 功能按鈕 -->
+                <div class="hidden md:flex items-center gap-6 text-sm">
+                    <a href="#inventory" class="text-slate-300 hover:text-amber-400 transition-colors">嚴選車庫</a>
+                    <a href="#guarantee" class="text-slate-300 hover:text-amber-400 transition-colors">三大保證</a>
+                    <a href="#location" class="text-slate-300 hover:text-amber-400 transition-colors">賞車據點</a>
+                    <a href="https://www.facebook.com/profile.php?id=61590226944711" target="_blank" class="text-slate-300 hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                        <i class="fa-brands fa-facebook text-blue-500 text-base"></i> FB 粉絲團
+                    </a>
+                    <a href="https://www.instagram.com/js_auto_" target="_blank" class="text-slate-300 hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                        <i class="fa-brands fa-instagram text-pink-500 text-base"></i> IG 官方帳號
+                    </a>
+                </div>
+
+                <!-- 員工後台登入按鈕 -->
+                <div>
+                    <button onclick="handleStaffAuthModal()" id="staffAuthBtn" class="border border-amber-500/30 hover:border-amber-400 text-amber-400 hover:text-white hover:bg-amber-500/10 px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-user-lock"></i> <span id="staffBtnText">員工後台上架</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero 頁頭主視角視覺區 -->
+    <header class="relative py-16 md:py-24 overflow-hidden bg-gradient-to-b from-dark-900 via-dark-950 to-dark-950">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- 左側文案區塊 -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
+                        <i class="fa-solid fa-circle-check"></i> 台灣超級鑑定 TAIWAN SUPER INSPECTION 全車系認證
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-black leading-tight tracking-wide text-white">
+                        買賣中古豪車 · 嚴選品質<br>
+                        <span class="gold-text-gradient">振軒車業 JS-AUTO</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm md:text-base leading-relaxed max-w-2xl">
+                        我們堅持最高標準審核每一台入庫中古車輛。透明車況、誠信交易，為您提供最安心無虞的賞車與購車體驗。
+                    </p>
+
+                    <!-- 三大保證標籤區 (水滴圖案修正) -->
+                    <div class="grid grid-cols-3 gap-3 pt-4 max-w-lg">
+                        <div class="bg-dark-900 border border-slate-800 p-3 rounded-xl text-center">
+                            <i class="fa-solid fa-car-burst text-amber-400 text-xl mb-1"></i>
+                            <p class="text-xs font-bold text-white">保證不賣事故車</p>
+                        </div>
+                        <div class="bg-dark-900 border border-slate-800 p-3 rounded-xl text-center">
+                            <i class="fa-solid fa-droplet text-blue-400 text-xl mb-1"></i>
+                            <p class="text-xs font-bold text-white">保證不賣泡水車</p>
+                        </div>
+                        <div class="bg-dark-900 border border-slate-800 p-3 rounded-xl text-center">
+                            <i class="fa-solid fa-gauge-high text-amber-400 text-xl mb-1"></i>
+                            <p class="text-xs font-bold text-white">保證不賣調表車</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <a href="#inventory" class="gold-btn px-8 py-3.5 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-car"></i> 瀏覽嚴選車輛
+                        </a>
+                        <a href="https://maps.google.com/?q=新北市五股區觀音里中直路5-13號" target="_blank" class="border border-slate-700 hover:border-amber-500/50 text-slate-200 px-6 py-3.5 rounded-xl text-sm transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-map-pin text-amber-400"></i> 賞車據點地圖
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 右側品牌橫幅/Logo 展示卡 -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-full max-w-md bg-dark-900/80 border border-amber-500/20 p-8 rounded-3xl shadow-2xl backdrop-blur-sm text-center">
+                        <!-- 自訂 Logo 預覽區域 -->
+                        <div id="heroLogoContainer" class="w-36 h-36 mx-auto rounded-full border-2 border-amber-500/30 flex items-center justify-center bg-dark-950 overflow-hidden shadow-xl mb-6">
+                            <!-- JS Dynamic Image -->
+                        </div>
+                        <h3 class="text-2xl font-black text-white tracking-widest mb-1">振軒車業</h3>
+                        <p class="text-xs text-amber-400 tracking-widest font-bold mb-4">JS-AUTO</p>
+                        <div class="w-16 h-0.5 bg-amber-500/30 mx-auto mb-4"></div>
+                        <p class="text-xs text-slate-400 tracking-widest">專業 · 誠信 · 品質 · 服務</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要庫存車輛庫房 Section -->
+    <main id="inventory" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-grow">
+        <!-- 標題與篩選控制列 -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div>
+                <span class="text-xs font-bold text-amber-400 tracking-widest">EXCLUSIVE INVENTORY</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-white mt-1">嚴選在庫車庫</h3>
+            </div>
+            
+            <!-- 品牌篩選器 -->
+            <div class="flex flex-wrap gap-2 text-xs" id="brandFilterContainer">
+                <button onclick="filterCars('ALL')" class="brand-filter-btn active bg-amber-500 text-black font-bold px-4 py-2 rounded-xl border border-amber-500">全部車輛</button>
+                <button onclick="filterCars('BMW')" class="brand-filter-btn bg-dark-900 text-slate-300 px-4 py-2 rounded-xl border border-slate-800 hover:border-amber-500/40">BMW</button>
+                <button onclick="filterCars('BENZ')" class="brand-filter-btn bg-dark-900 text-slate-300 px-4 py-2 rounded-xl border border-slate-800 hover:border-amber-500/40">Mercedes-Benz</button>
+                <button onclick="filterCars('PORSCHE')" class="brand-filter-btn bg-dark-900 text-slate-300 px-4 py-2 rounded-xl border border-slate-800 hover:border-amber-500/40">Porsche</button>
+                <button onclick="filterCars('AUDI')" class="brand-filter-btn bg-dark-900 text-slate-300 px-4 py-2 rounded-xl border border-slate-800 hover:border-amber-500/40">Audi</button>
+                <button onclick="filterCars('OTHER')" class="brand-filter-btn bg-dark-900 text-slate-300 px-4 py-2 rounded-xl border border-slate-800 hover:border-amber-500/40">其他品牌</button>
+            </div>
+        </div>
+
+        <!-- 車輛卡片列表 Grid -->
+        <div id="carGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- 由 JavaScript 動態動態繪製渲染車輛 -->
+        </div>
+    </main>
+
+    <!-- 三大保證與鑑定認證說明區塊 (水滴圖案修正) -->
+    <section id="guarantee" class="bg-dark-900 border-y border-amber-500/10 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-bold text-amber-400 tracking-widest">TRUSTED GUARANTEE</span>
+                <h3 class="text-2xl sm:text-3xl font-black text-white mt-1">安心賞車四大堅持</h3>
+                <p class="text-slate-400 text-sm mt-3">振軒車業秉持透明透明車況原則，提供最具保障的購車經驗</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- 事故車 -->
+                <div class="bg-dark-950 p-6 rounded-2xl border border-slate-800 text-center hover:border-amber-500/30 transition-all">
+                    <div class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                        <i class="fa-solid fa-car-burst"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-base mb-2">不賣重大事故車</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">全車結構完整，無重大事故、車體骨架撞擊焊接紀錄。</p>
+                </div>
+
+                <!-- 泡水車 (水滴圖案) -->
+                <div class="bg-dark-950 p-6 rounded-2xl border border-slate-800 text-center hover:border-amber-500/30 transition-all">
+                    <div class="w-14 h-14 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-base mb-2">不賣泡水車</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">嚴格檢驗引擎室、底盤與車艙內部，保證絕無泡水痕跡。</p>
+                </div>
+
+                <!-- 調表車 -->
+                <div class="bg-dark-950 p-6 rounded-2xl border border-slate-800 text-center hover:border-amber-500/30 transition-all">
+                    <div class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-base mb-2">不賣調表車</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">里程真實透明，提供監理站與保養紀錄完整對照驗證。</p>
+                </div>
+
+                <!-- 台灣超級鑑定 -->
+                <div class="bg-dark-950 p-6 rounded-2xl border border-amber-500/30 text-center hover:border-amber-400 transition-all relative overflow-hidden">
+                    <div class="absolute -right-6 -top-6 w-20 h-20 bg-amber-500/10 rounded-full blur-xl"></div>
+                    <div class="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-400 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg shadow-amber-500/10">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <h4 class="font-bold text-amber-400 text-base mb-2">台灣超級鑑定</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">全車均附第三方權威認證報告，車況品質透明看得到。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 賞車據點區塊 -->
+    <section id="location" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-dark-900 border border-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <span class="text-xs font-bold text-amber-400 tracking-widest">SHOWROOM LOCATION</span>
+                    <h3 class="text-2xl sm:text-3xl font-black text-white">親臨振軒車業賞車</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                        我們提供寬敞舒適的室內賞車環境，現場專員貼心解說。歡迎提前預約專屬試駕體驗。
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3 bg-dark-950 p-4 rounded-xl border border-slate-800">
+                            <i class="fa-solid fa-map-location-dot text-amber-400 text-xl mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">車行地址</h4>
+                                <p class="text-xs text-slate-300 mt-1">新北市五股區觀音里中直路 5-13 號</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3 bg-dark-950 p-4 rounded-xl border border-slate-800">
+                            <i class="fa-solid fa-clock text-amber-400 text-xl mt-1"></i>
+                            <div>
+                                <h4 class="font-bold text-white text-sm">營業時間</h4>
+                                <p class="text-xs text-slate-300 mt-1">星期一 至 星期日 11:00 - 21:00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <a href="https://maps.google.com/?q=新北市五股區觀音里中直路5-13號" target="_blank" class="gold-btn px-6 py-3 rounded-xl text-xs font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-location-arrow"></i> 開啟 Google 地圖導航
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61590226944711" target="_blank" class="bg-blue-600/20 text-blue-400 border border-blue-500/30 hover:bg-blue-600/30 px-6 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-brands fa-facebook"></i> 私訊 FB 專頁
+                        </a>
+                        <a href="https://www.instagram.com/js_auto_" target="_blank" class="bg-pink-600/20 text-pink-400 border border-pink-500/30 hover:bg-pink-600/30 px-6 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-brands fa-instagram"></i> 私訊 IG 帳號
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 rounded-2xl overflow-hidden border border-slate-800 shadow-xl h-72 lg:h-96 relative bg-dark-950 flex items-center justify-center">
+                    <!-- Google 地圖嵌入框架 -->
+                    <iframe 
+                        src="https://maps.google.com/maps?q=新北市五股區觀音里中直路5-13號&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                        class="w-full h-full border-0 filter grayscale opacity-80 hover:grayscale-0 transition-all duration-500" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 Footer -->
+    <footer class="bg-dark-950 border-t border-slate-800/80 py-12 text-slate-400 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-slate-800 pb-8">
+                <div class="flex items-center gap-3">
+                    <div id="footerLogoContainer" class="w-10 h-10 rounded-full border border-amber-500/30 flex items-center justify-center bg-dark-900 overflow-hidden">
+                        <!-- JS Dynamic Image -->
+                    </div>
+                    <div>
+                        <span class="text-base font-bold text-white">振軒車業 JS-AUTO</span>
+                        <p class="text-[10px] text-slate-500">嚴選二手車 · 專業認證 · 誠信交易</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <a href="https://www.facebook.com/profile.php?id=61590226944711" target="_blank" class="hover:text-amber-400 transition-colors flex items-center gap-1">
+                        <i class="fa-brands fa-facebook text-lg"></i> Facebook
+                    </a>
+                    <a href="https://www.instagram.com/js_auto_" target="_blank" class="hover:text-amber-400 transition-colors flex items-center gap-1">
+                        <i class="fa-brands fa-instagram text-lg"></i> Instagram
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-500 text-[11px]">
+                <p>&copy; 2026 振軒車業 JS-AUTO. All Rights Reserved.</p>
+                <p>地址：新北市五股區觀音里中直路 5-13 號 | 營業時間：11:00 - 21:00</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal 1: 員工後台上架 & LOGO 更換彈窗 -->
+    <div id="staffModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-900 border border-amber-500/30 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="bg-dark-950 px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                <h4 class="font-bold text-amber-400 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> 員工專屬管理後台
+                </h4>
+                <button onclick="closeStaffModal()" class="text-slate-400 hover:text-white text-xl">&times;</button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-8 flex-grow">
+                <!-- 1. Logo更換區塊 (如FB頭貼) -->
+                <div class="bg-dark-950 p-5 rounded-xl border border-slate-800">
+                    <h5 class="font-bold text-white text-sm mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-camera text-amber-400"></i> 車行 LOGO 更換 (大頭貼上傳)
+                    </h5>
+                    <p class="text-xs text-slate-400 mb-4">可直接點擊下方選擇圖片，將會為您更換網站 Header、Hero 與 Footer 的官方圖示。</p>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <input type="file" id="logoInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                        <button onclick="document.getElementById('logoInput').click()" class="gold-btn px-4 py-2 rounded-xl text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-upload"></i> 上傳 LOGO 圖片
+                        </button>
+                        <button onclick="resetLogo()" class="border border-slate-700 text-slate-300 hover:text-white px-4 py-2 rounded-xl text-xs">
+                            重設為空白狀態
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. 新增車輛表單 -->
+                <div>
+                    <h5 class="font-bold text-white text-sm mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-amber-400"></i> 新增入庫車輛
+                    </h5>
+                    <form id="addCarForm" onsubmit="handleAddCar(event)" class="space-y-4 text-xs">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-slate-400 mb-1">車輛名稱 (例: 2021 BMW M4 Competition)</label>
+                                <input type="text" id="carTitle" required class="w-full bg-dark-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">品牌分類</label>
+                                <select id="carBrand" class="w-full bg-dark-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-500 outline-none">
+                                    <option value="BMW">BMW</option>
+                                    <option value="BENZ">Mercedes-Benz</option>
+                                    <option value="PORSCHE">Porsche</option>
+                                    <option value="AUDI">Audi</option>
+                                    <option value="OTHER">其他品牌</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-slate-400 mb-1">出廠年份 (例: 2021)</label>
+                                <input type="number" id="carYear" required class="w-full bg-dark-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">售價 (萬元)</label>
+                                <input type="number" id="carPrice" required class="w-full bg-dark-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">行駛里程 (公里)</label>
+                                <input type="text" id="carMileage" placeholder="例: 35,000" required class="w-full bg-dark-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-500 outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1">圖片網址 (URL)</label>
+                            <input type="url" id="carImage" placeholder="https://..." required class="w-full bg-dark-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-500 outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-400 mb-1">重點配備簡述</label>
+                            <textarea id="carDesc" rows="3" placeholder="碳纖維套件, 總代理, 跑車排氣管..." class="w-full bg-dark-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white focus:border-amber-500 outline-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full gold-btn py-3 rounded-xl font-bold text-sm">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> 確認發布上架
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: 車輛詳細資訊彈窗 (水滴圖案修正) -->
+    <div id="carDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-900 border border-amber-500/30 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="bg-dark-950 px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                <h4 id="detailTitle" class="font-bold text-white text-base">車輛詳情</h4>
+                <button onclick="closeDetailModal()" class="text-slate-400 hover:text-white text-xl">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+                <div class="rounded-xl overflow-hidden h-64 sm:h-80 bg-black relative">
+                    <img id="detailImage" src="" alt="車輛照片" class="w-full h-full object-cover">
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 bg-dark-950 p-4 rounded-xl border border-slate-800 text-center">
+                    <div>
+                        <span class="text-xs text-slate-500">年份</span>
+                        <p id="detailYear" class="font-bold text-white text-sm mt-0.5">-</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500">里程</span>
+                        <p id="detailMileage" class="font-bold text-white text-sm mt-0.5">-</p>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500">預售價格</span>
+                        <p id="detailPrice" class="font-bold text-amber-400 text-base mt-0.5">-</p>
+                    </div>
+                </div>
+
+                <!-- 三大保證 + 台灣超級鑑定 標籤 (水滴圖案) -->
+                <div class="bg-dark-950 p-4 rounded-xl border border-amber-500/20">
+                    <h5 class="text-xs font-bold text-amber-400 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-shield-check"></i> 車況安心品質認證
+                    </h5>
+                    <div class="flex flex-wrap gap-2 text-[11px]">
+                        <span class="bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-md border border-amber-500/20"><i class="fa-solid fa-car-burst"></i> 保證不賣事故車</span>
+                        <span class="bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-md border border-blue-500/20"><i class="fa-solid fa-droplet"></i> 保證不賣泡水車</span>
+                        <span class="bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-md border border-amber-500/20"><i class="fa-solid fa-gauge-high"></i> 保證不賣調表車</span>
+                        <span class="bg-amber-500/20 text-white font-bold px-2.5 py-1 rounded-md border border-amber-400"><i class="fa-solid fa-certificate text-amber-400"></i> 台灣超級鑑定認證</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h5 class="text-xs font-bold text-slate-400 mb-2">車輛重點說明與配備</h5>
+                    <p id="detailDesc" class="text-xs text-slate-300 leading-relaxed bg-dark-950 p-4 rounded-xl border border-slate-800 whitespace-pre-line"></p>
+                </div>
+
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="https://www.facebook.com/profile.php?id=61590226944711" target="_blank" class="flex-1 gold-btn py-3 rounded-xl text-center text-xs font-bold flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-facebook"></i> 前往 FB 專頁諮詢
+                    </a>
+                    <a href="https://www.instagram.com/js_auto_" target="_blank" class="flex-1 bg-pink-600/20 text-pink-400 border border-pink-500/30 hover:bg-pink-600/30 py-3 rounded-xl text-center text-xs font-bold transition-all flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-instagram"></i> IG 官方帳號小盒子
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 邏輯控制 -->
+    <script>
+        // 預設在庫車輛範例資料
+        const defaultCars = [
+            {
+                id: 1,
+                title: '2021 BMW M4 Competition',
+                brand: 'BMW',
+                price: '388',
+                year: '2021',
+                mileage: '28,000 km',
+                image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80',
+                desc: '總代理 / 跑車排氣管 / 碳纖維賽車座椅 / 台灣超級鑑定 A 級認證'
+            },
+            {
+                id: 2,
+                title: '2022 Porsche 911 GT3',
+                brand: 'PORSCHE',
+                price: '898',
+                year: '2022',
+                mileage: '12,000 km',
+                image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=800&q=80',
+                desc: '歐規 / 跑車計時套件 / 後軸轉向 / 原廠保固中'
+            },
+            {
+                id: 3,
+                title: '2020 Mercedes-AMG C63 S Coupe',
+                brand: 'BENZ',
+                price: '328',
+                year: '2020',
+                mileage: '35,000 km',
+                image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80',
+                desc: '總代理 V8 雙渦輪 / 柏林之聲音響 / 全景天窗 / 台灣超級鑑定合格'
+            }
+        ];
+
+        // 登入狀態與車輛資料庫
+        let isStaffLoggedIn = false;
+        let carData = JSON.parse(localStorage.getItem('js_auto_cars')) || defaultCars;
+        let currentFilter = 'ALL';
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            renderLogo();
+            renderCars();
+        });
+
+        // 渲染 Logo 函數
+        function renderLogo() {
+            const storedLogo = localStorage.getItem('js_auto_logo');
+            const logoContainers = ['navLogoContainer', 'heroLogoContainer', 'footerLogoContainer'];
+
+            logoContainers.forEach(id => {
+                const container = document.getElementById(id);
+                if (!container) return;
+
+                if (storedLogo) {
+                    container.innerHTML = `<img src="${storedLogo}" alt="JS-AUTO Logo" class="w-full h-full object-cover">`;
+                } else {
+                    // 預設為文字備用狀態
+                    container.innerHTML = `
+                        <div class="text-amber-400 font-black text-center leading-none">
+                            <span class="text-xs block">JS</span>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // 上傳自訂 Logo 處理 (Base64 儲存)
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Image = e.target.result;
+                localStorage.setItem('js_auto_logo', base64Image);
+                renderLogo();
+                alert('車行 LOGO 已成功更換全站套用！');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 重設 LOGO 為預設
+        function resetLogo() {
+            localStorage.removeItem('js_auto_logo');
+            renderLogo();
+            alert('LOGO 已重設為空白備用狀態。');
+        }
+
+        // 員工後台身分驗證 Modal 觸發
+        function handleStaffAuthModal() {
+            if (isStaffLoggedIn) {
+                if (confirm('是否要登出員工後台權限？')) {
+                    isStaffLoggedIn = false;
+                    document.getElementById('staffBtnText').innerText = '員工後台上架';
+                    alert('已順利登出。');
+                }
+                return;
+            }
+
+            const password = prompt('【振軒車業後台】請輸入員工登入密碼：\n(預設密碼為: jsauto888)');
+            if (password === 'jsauto888') {
+                isStaffLoggedIn = true;
+                document.getElementById('staffBtnText').innerText = '後台已登入 (點擊登出)';
+                document.getElementById('staffModal').classList.remove('hidden');
+            } else if (password !== null) {
+                alert('密碼輸入錯誤，無法進入管理後台。');
+            }
+        }
+
+        function closeStaffModal() {
+            document.getElementById('staffModal').classList.add('hidden');
+        }
+
+        // 渲染車輛列表 (水滴圖案修正)
+        function renderCars() {
+            const carGrid = document.getElementById('carGrid');
+            const filteredCars = currentFilter === 'ALL' 
+                ? carData 
+                : carData.filter(car => car.brand === currentFilter);
+
+            if (filteredCars.length === 0) {
+                carGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-500">
+                        <i class="fa-solid fa-car-tunnel text-4xl mb-3 block"></i>
+                        <p>目前尚無該品牌在庫車輛</p>
+                    </div>
+                `;
+                return;
+            }
+
+            carGrid.innerHTML = filteredCars.map(car => `
+                <div class="bg-dark-900 border border-slate-800 rounded-2xl overflow-hidden card-hover flex flex-col justify-between">
+                    <div>
+                        <!-- 車輛圖片區塊 -->
+                        <div class="relative h-52 overflow-hidden bg-black group cursor-pointer" onclick="openDetailModal(${car.id})">
+                            <img src="${car.image}" alt="${car.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-3 left-3 bg-amber-500 text-black text-[10px] font-black px-2.5 py-1 rounded-md shadow-md">
+                                ${car.brand}
+                            </div>
+                            <div class="absolute bottom-3 right-3 bg-dark-950/80 backdrop-blur-md border border-amber-500/30 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-md">
+                                <i class="fa-solid fa-award"></i> 台灣超級鑑定
+                            </div>
+                        </div>
+
+                        <!-- 卡片內容資訊 -->
+                        <div class="p-5 space-y-3">
+                            <h4 class="font-black text-white text-base hover:text-amber-400 cursor-pointer transition-colors" onclick="openDetailModal(${car.id})">
+                                ${car.title}
+                            </h4>
+
+                            <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-3">
+                                <span><i class="fa-regular fa-calendar-check text-amber-400"></i> ${car.year} 年</span>
+                                <span><i class="fa-solid fa-road text-amber-400"></i> ${car.mileage}</span>
+                            </div>
+
+                            <!-- 三大保證標籤列 (水滴圖案) -->
+                            <div class="flex flex-wrap gap-1.5 text-[10px]">
+                                <span class="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20"><i class="fa-solid fa-car-burst"></i> 無事故</span>
+                                <span class="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20"><i class="fa-solid fa-droplet"></i> 無泡水</span>
+                                <span class="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20"><i class="fa-solid fa-gauge-high"></i> 無調表</span>
+                            </div>
+
+                            <p class="text-xs text-slate-400 line-clamp-2">${car.desc}</p>
+                        </div>
+                    </div>
+
+                    <!-- 售價與按鈕列 -->
+                    <div class="p-5 pt-0 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-500 block">售價</span>
+                            <span class="text-xl font-black text-amber-400">${car.price} <span class="text-xs font-normal text-slate-400">萬</span></span>
+                        </div>
+                        <div class="flex gap-2">
+                            ${isStaffLoggedIn ? `
+                                <button onclick="deleteCar(${car.id})" class="bg-red-500/10 text-red-400 hover:bg-red-500/20 px-3 py-2 rounded-xl text-xs font-bold transition-all">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            ` : ''}
+                            <button onclick="openDetailModal(${car.id})" class="gold-btn px-4 py-2 rounded-xl text-xs">
+                                詳情
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 品牌篩選
+        function filterCars(brand) {
+            currentFilter = brand;
+            document.querySelectorAll('.brand-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-amber-500', 'text-black', 'font-bold');
+                btn.classList.add('bg-dark-900', 'text-slate-300');
+            });
+            event.target.classList.add('bg-amber-500', 'text-black', 'font-bold');
+            renderCars();
+        }
+
+        // 新增車輛表單處理
+        function handleAddCar(e) {
+            e.preventDefault();
+            const newCar = {
+                id: Date.now(),
+                title: document.getElementById('carTitle').value,
+                brand: document.getElementById('carBrand').value,
+                year: document.getElementById('carYear').value,
+                price: document.getElementById('carPrice').value,
+                mileage: document.getElementById('carMileage').value + ' km',
+                image: document.getElementById('carImage').value,
+                desc: document.getElementById('carDesc').value
+            };
+
+            carData.unshift(newCar);
+            localStorage.setItem('js_auto_cars', JSON.stringify(carData));
+            renderCars();
+            closeStaffModal();
+            document.getElementById('addCarForm').reset();
+            alert('新車輛已成功上架！');
+        }
+
+        // 刪除車輛
+        function deleteCar(id) {
+            if (confirm('確定要刪除此車輛資訊嗎？')) {
+                carData = carData.filter(c => c.id !== id);
+                localStorage.setItem('js_auto_cars', JSON.stringify(carData));
+                renderCars();
+            }
+        }
+
+        // 詳細資訊 Modal
+        function openDetailModal(id) {
+            const car = carData.find(c => c.id === id);
+            if (!car) return;
+
+            document.getElementById('detailTitle').innerText = car.title;
+            document.getElementById('detailImage').src = car.image;
+            document.getElementById('detailYear').innerText = car.year + ' 年';
+            document.getElementById('detailMileage').innerText = car.mileage;
+            document.getElementById('detailPrice').innerText = car.price + ' 萬';
+            document.getElementById('detailDesc').innerText = car.desc;
+
+            document.getElementById('carDetailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('carDetailModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
